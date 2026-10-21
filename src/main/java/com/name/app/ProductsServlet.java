@@ -21,7 +21,7 @@ public class ProductsServlet extends HttpServlet {
             throws ServletException, IOException {
         try (Connection conn = Db.getConnection();
                 Statement stmt = conn.createStatement();
-                ResultSet rs = stmt.executeQuery("SELECT name, price, stock FROM products")) {
+                ResultSet rs = stmt.executeQuery("SELECT id, name, price, stock FROM products")) {
 
             StringBuilder json = new StringBuilder("[");
             boolean first = true;
@@ -29,7 +29,8 @@ public class ProductsServlet extends HttpServlet {
                 if (!first) {
                     json.append(",");
                 }
-                json.append("{\"name\":\"").append(rs.getString("name")).append("\",");
+                json.append("{\"id\":").append(rs.getInt("id")).append(",");
+                json.append("\"name\":\"").append(rs.getString("name")).append("\",");
                 json.append("\"price\":").append(rs.getDouble("price")).append(",");
                 json.append("\"stock\":").append(rs.getInt("stock")).append("}");
                 first = false;

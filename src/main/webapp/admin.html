@@ -1,17 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Admin</title>
 </head>
+
 <body>
     <h1>Welcome Admin</h1>
-    <form>
-        <input type="text" name="name">
-        <input type="number" name = "price">
-        <input type="number" name = "stock">
-        <button type="submit">Add product</button>    
+    <form action="/app-1.0-SNAPSHOT/admin" method="post">
+        <input type="text" name="name" placeholder="product name">
+        <input type="number" name="price" placeholder="price" step="0.01">
+        <input type="number" name="stock" placeholder="stock">
+        <button type="submit">Add product</button>
     </form>
     <div id="product_list"></div>
+    <script>
+        fetch('/app-1.0-SNAPSHOT/products')
+            .then(response => response.json())
+            .then(data => {
+                let html = '<ul>';
+                data.forEach(product => {
+                    html += `<li>${product.name} - $${product.price} (${product.stock} in stock)    <form action="/app-1.0-SNAPSHOT/delete" method="post">
+        <input type="hidden" name="id" value="${product.id}">
+        <button type="submit">Delete</button>
+    </form></li>`;
+                });
+                html += '</ul>';
+                document.getElementById('product_list').innerHTML = html;
+            });
+    </script>
 </body>
+
 </html>

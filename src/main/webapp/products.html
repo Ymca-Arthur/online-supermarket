@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Online Supermarket</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Online Supermarket</h1>
+    <div>
+        <a href="#">Home</a>
+        <a href="#">Login</a>
+        <a href="#">Products</a>
+        
+    </div>
+      <div id="products"></div>
+
+    <p>copyright 2026 do not distribute</p>
+    
+    <script>
+        fetch('/app-1.0-SNAPSHOT/products')
+        .then(response => response.json())
+        .then(data => {
+    let html = '<ul>';
+    data.forEach(product => {
+        html += `<li>${product.name} - $${product.price} (${product.stock} in stock)</li>`;
+    });
+    html += '</ul>';
+    document.getElementById('products').innerHTML = html;
+});
+    </script>
+</body>
+</html>

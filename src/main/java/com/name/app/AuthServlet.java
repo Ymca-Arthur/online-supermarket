@@ -1,10 +1,10 @@
 package com.name.app;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -30,6 +30,7 @@ public class AuthServlet extends HttpServlet {
             stmt.setString(2, password);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()){
+                request.getSession().setAttribute("username", username);
                 if (rs.getBoolean("is_admin")){
                     response.sendRedirect("admin.html");
                 } else {

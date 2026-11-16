@@ -8,9 +8,8 @@
 <body>
     <h1>Online Supermarket</h1>
     <div>
-        <a href="#">Home</a>
-        <a href="#">Login</a>
-        <a href="#">Products</a>
+        <a href="index.html">Back to login</a>
+        <a href="cart.html">Cart</a>
         
     </div>
       <div id="products"></div>
@@ -23,7 +22,11 @@
         .then(data => {
     let html = '<ul>';
     data.forEach(product => {
-        html += `<li>${product.name} - $${product.price} (${product.stock} in stock)</li>`;
+               html += `<li>${product.name} - $${product.price} (${product.stock} in stock)
+            <form action="/app-1.0-SNAPSHOT/cart" method="post">
+                <input type="hidden" name="product_id" value="${product.id}">
+                ${product.stock > 0 ? '<button type="submit">Add to cart</button>' : 'Out of stock'}
+            </form></li>`;
     });
     html += '</ul>';
     document.getElementById('products').innerHTML = html;

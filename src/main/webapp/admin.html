@@ -21,10 +21,11 @@
             .then(data => {
                 let html = '<ul>';
                 data.forEach(product => {
-                    html += `<li>${product.name} - $${product.price} (${product.stock} in stock)    <form action="/app-1.0-SNAPSHOT/delete" method="post">
-        <input type="hidden" name="id" value="${product.id}">
-        <button type="submit">Delete</button>
-    </form></li>`;
+                                    html += `<li>${product.name} - $${product.price} (${product.stock} in stock)
+            <form action="/app-1.0-SNAPSHOT/delete" method="post">
+                <input type="hidden" name="id" value="${product.id}">
+                <button type="submit">Delete</button>
+            </form></li>`;
                 });
                 html += '</ul>';
                 document.getElementById('product_list').innerHTML = html;

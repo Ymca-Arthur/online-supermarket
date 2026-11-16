@@ -4,7 +4,11 @@ Course project for תב"א - תכנות בסביבת אינטרנט (assignment 
 
 ## ▶ START HERE NEXT SESSION
 
-Last session: 2026-10-21. Phases 1–7 done. **Next: Phase 8 — Cart**, starting with the session "wristband": in `AuthServlet.doPost`, right after `if (rs.next()){`, add `request.getSession().setAttribute("username", username);` (explained once already on 2026-10-21 — quick recap, then continue). Then: `cart_items` table → "Add to cart" button on `products.html` → `cart.html` → "Buy" lowers stock + empties the cart.
+Last session: 2026-11-17. Phases 1–9 done. **Next: Phase 10 — explain-it-back** (user explains every file to Claude in their own words; no new code). Phase 9 summary: nav on `products.html` = "Back to login" + "Cart" only; `CartServlet.doPost` redirects to login if not logged in; "Out of stock" instead of the button when stock is 0; green `button` CSS + `#cart_list` box; `DbTest.java` deleted. Skipped on purpose: login check in `BuyServlet`, admin protection.
+
+Phase 8 summary: session wristband in `AuthServlet`; `cart_items` table (id, username, product_id, quantity); `CartServlet` (`doPost` = INSERT row, `doGet` = JOIN query → JSON); `cart.html` (list + Buy form); `BuyServlet` (`/buy`: UPDATE stock with SUM subquery, DELETE cart rows, redirect to `thanks.html`); `thanks.html`.
+
+Known gaps (optional for Phase 9): not-logged-in user has `username = null` (Add to cart saves a nameless row); no stock check (stock can go negative); duplicate cart lines per click; admin page is not protected; `DbTest.java` scratch file still present.
 
 Test users: `uriah` / `1234` (shopper), `admin` / `admin123` (admin), plus any sign-ups. Remember to start MySQL first (`Start-Service MySQL80`, admin PowerShell).
 
@@ -80,8 +84,8 @@ A faster shortcut exists for static-HTML-only changes (copy the file directly in
 - [x] **Phase 7 — admin add/delete products.** *Done 2026-10-21.*
   - [x] **Add product** (done + tested 2026-10-21): `admin.html` form → `/app-1.0-SNAPSHOT/admin` POST, placeholders, `step="0.01"` on price (number boxes are whole-numbers-only by default). `AdminServlet.doPost`: `Double.parseDouble` / `Integer.parseInt` (getParameter always returns String), `INSERT INTO products (name, price, stock) VALUES (?, ?, ?)` with `setString`/`setDouble`/`setInt`, `executeUpdate()`, redirect to `admin.html`. Tested: added "kidney beans", showed on storefront.
   - [x] **Delete product** (done + tested 2026-10-21): `ProductsServlet` now selects `id` and puts `"id":...` first in each JSON object. `admin.html` has the products script (at the bottom, before `</body>`, targeting `#product_list`); each `<li>` has its own small form → `/app-1.0-SNAPSHOT/delete` with `<input type="hidden" name="id" value="${product.id}">` + Delete button (hidden = sent but not shown). New `DeleteServlet` (`@WebServlet("/delete")`, in `com/name/app/`): `Integer.parseInt(getParameter("id"))`, `DELETE FROM products WHERE id = ?` + `setInt`, redirect to `admin.html`. Never run DELETE without WHERE. Tested: deleted "kidney beans".
-- [ ] **Phase 8 — Cart** ← NEXT (added 2026-10-21 at my request — not in the original plan). Logged-in users get an "Add to cart" button per product; each user has their own cart; a "Buy" button inside the cart lowers `stock` for each item and empties the cart. Planned design: new MySQL table `cart_items` (user id, product id, quantity) so carts survive logout; reuses forms/POST (Phase 6–7) + session to know which user.
-- [ ] Phase 9 — wire up remaining nav links, final polish, full click-through test.
+- [x] **Phase 8 — Cart** *Done + tested 2026-11-17.* (added 2026-10-21 at my request — not in the original plan). Logged-in users get an "Add to cart" button per product; each user has their own cart; a "Buy" button inside the cart lowers `stock` for each item and empties the cart. Planned design: new MySQL table `cart_items` (user id, product id, quantity) so carts survive logout; reuses forms/POST (Phase 6–7) + session to know which user.
+- [x] Phase 9 — *Done 2026-11-17.* wire up remaining nav links, final polish, full click-through test.
 - [ ] **Phase 10 — "Explain it back" review** (my request 2026-10-21). We go through **every file** in the project one by one, and **I explain it to Claude** in my own words. Claude checks my understanding and fills any gaps — no new code, just making sure I understand everything.
 
 ## Known bug: "No suitable driver found" (FIXED 2026-10-21)

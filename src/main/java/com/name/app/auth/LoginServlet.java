@@ -1,4 +1,4 @@
-package com.name.app;
+package com.name.app.auth;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -12,38 +12,36 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/auth")
-public class AuthServlet extends HttpServlet {
+import com.name.app.db.DatabaseManager;
+
+@WebServlet("/login")
+public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+        request.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
-        try (Connection conn = Db.getConnection()){
+        try (Connection conn = DatabaseManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement("SELECT is_admin FROM users WHERE username = ? AND password = ?");
             stmt.setString(1, username);
             stmt.setString(2, password);
             ResultSet rs = stmt.executeQuery();
-            if (rs.next()){
+            if (rs.next()) {
+                boolean isAdmin = rs.getBoolean("is_admin");
                 request.getSession().setAttribute("username", username);
-                if (rs.getBoolean("is_admin")){
-                    response.sendRedirect("admin.html");
-                } else {
-                    response.sendRedirect("products.html");
-                }
-            }else{
-                response.getWriter().write("wrong username or password.");
+                request.getSession().setAttribute("isAdmin", isAdmin);
+                response.sendRedirect(request.getContextPath() + (isAdmin ? "/admin" : "/products"));
+            } else {
+                request.setAttribute("error", "Wrong username or password.");
+                request.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(request, response);
             }
-                
-
-
-        } catch (SQLException e){
+        } catch (SQLException e) {
             throw new ServletException(e);
-        }   
+        }
     }
 }

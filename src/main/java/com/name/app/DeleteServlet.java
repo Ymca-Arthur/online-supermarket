@@ -4,26 +4,28 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.name.app.db.DatabaseManager;
+
 @WebServlet("/delete")
 public class DeleteServlet extends HttpServlet {
-    @Override 
-    protected void doPost (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
-        try (Connection conn = Db.getConnection()) {
+        try (Connection conn = DatabaseManager.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement("DELETE FROM products WHERE id = ?");
             stmt.setInt(1, id);
             stmt.executeUpdate();
-            response.sendRedirect("admin.html");
+            response.sendRedirect(request.getContextPath() + "/admin");
         } catch (SQLException e) {
             throw new ServletException(e);
         }
     }
 }
-

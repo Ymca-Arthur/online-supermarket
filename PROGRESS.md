@@ -2,6 +2,20 @@
 
 Course project for תב"א - תכנות בסביבת אינטרנט (assignment PDF: `C:\Users\User\Desktop\8200 Speedrun\Work that isnt code\תבא - java.pdf` — **not found there anymore as of 2026-10-21**, location unknown). Plain Servlets + JSP on Tomcat, MySQL for storage. No frameworks, intentionally simple UI (not fancy).
 
+## ▶ JSP CONVERSION (2026-11-22, teacher asked for dynamic JSP)
+
+Restructured to the teacher's MVC layout (example given 2026-11-22). **Servlets = logic, JSPs = display only** (in `WEB-INF/views/`, not URL-accessible; servlets `forward` to them with data in `request.setAttribute`). JSPs use JSTL (`<c:forEach>`, `<c:out>`; jstl 1.2 added to pom).
+
+```
+com/name/app/        ProductsServlet(/products) CartServlet(/cart GET view, POST add) BuyServlet(/buy)
+                     ThanksServlet(/thanks) AdminServlet(/admin GET list, POST add) DeleteServlet(/delete)
+com/name/app/db/     DatabaseManager (was Db.java)
+com/name/app/auth/   LoginServlet(/login GET+POST) LogoutServlet(/logout) SignupServlet(/signup) AuthFilter
+webapp/              index.jsp (router: redirects to /login, /products or /admin), style.css
+webapp/WEB-INF/views login.jsp products.jsp cart.jsp admin.jsp thanks.jsp
+```
+`AuthFilter` protects /products /cart /buy /thanks /admin /delete (not logged in → /login; non-admin on /admin or /delete → /products). Session now stores `username` + `isAdmin`. No H2/AppInitListener (teacher's example used H2; we keep MySQL). Links are now URLs like `/cart`, `/login` (no `.html`). Needs testing after deploy. Phase 10 (explain-it-back) now covers these files.
+
 ## ▶ START HERE NEXT SESSION
 
 Last session: 2026-11-17. Phases 1–9 done. **Next: Phase 10 — explain-it-back** (user explains every file to Claude in their own words; no new code). Phase 9 summary: nav on `products.html` = "Back to login" + "Cart" only; `CartServlet.doPost` redirects to login if not logged in; "Out of stock" instead of the button when stock is 0; green `button` CSS + `#cart_list` box; `DbTest.java` deleted. Skipped on purpose: login check in `BuyServlet`, admin protection.
